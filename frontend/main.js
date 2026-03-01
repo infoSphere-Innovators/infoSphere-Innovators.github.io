@@ -5,12 +5,13 @@
 // If you're serving the frontend from GitHub Pages (or another host),
 // set PRODUCTION_API_URL to your deployed backend and comment out the
 // local detection line below.
-const PRODUCTION_API_URL = 'https://davaobuildai.onrender.com'; // <-- updated to match deployed backend
+
+// Use local backend for localhost, live backend for production
+const LOCAL_API_URL = 'http://127.0.0.1:5000';
+const LIVE_API_URL = 'https://davaobuildai.onrender.com';
 const API_BASE_URL = (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost')
-    ? 'http://127.0.0.1:5000'
-    : PRODUCTION_API_URL;
-// You can also hardcode the URL directly if you prefer:
-// const API_BASE_URL = 'https://davao-build-api.onrender.com';
+    ? LOCAL_API_URL
+    : LIVE_API_URL;
 
 
 let priceChart = null;
