@@ -7,7 +7,7 @@ import requests
 from datetime import datetime, timedelta
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=["https://infosphere-innovators.github.io"])  # Allow CORS for GitHub Pages frontend
 
 
 # TEST ROUTE
@@ -219,14 +219,25 @@ def estimate():
     # simple time-based growth assumption (5% per 30 days)
     factor = 1 + (timeline / 30) * 0.05
     predicted = current * factor
-    confidence_pct = 75  # placeholder
+
+    # --- Dynamic confidence calculation ---
+    # Use price volatility (std dev of last 4 prices) and timeline
+    hist_prices = materials.get(material, {}).get("historical_prices", [base_price])
+    if hist_prices and len(hist_prices) > 1:
+        volatility = pd.Series(hist_prices).pct_change().std() * 100  # percent stddev
+    else:
+        volatility = 0
+    # Confidence decreases with higher volatility and longer timeline
+    base_conf = 90  # start high
+    conf = base_conf - (volatility * 2) - (timeline * 0.3)
+    conf = max(50, min(99, round(conf)))  # clamp between 50 and 99
 
     recommendation = "BUY NOW" if predicted > current else "WAIT"
     return jsonify({
         "current_cost": current,
         "predicted_cost": predicted,
         "recommendation": recommendation,
-        "confidence_pct": confidence_pct
+        "confidence_pct": conf
     })
 
 
