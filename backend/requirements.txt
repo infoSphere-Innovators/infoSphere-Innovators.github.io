@@ -8,3 +8,5 @@ requests
 statsmodels
 prophet
 nltk
+gunicorn
+werkzeug

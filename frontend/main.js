@@ -1,5 +1,9 @@
 // central client-side logic for DavaoBuild AI dashboard
 
+// ========== CONFIGURATION ==========
+// Base URL for API calls - easily configurable for different environments
+const API_BASE_URL = 'http://127.0.0.1:5000';
+
 let priceChart = null;
 
 // ========== UTILITY FUNCTIONS ==========
@@ -29,7 +33,7 @@ async function generatePrediction() {
     showLoading();
     hideError();
     try {
-        const res = await fetch(`http://127.0.0.1:5000/predict/${material}`);
+        const res = await fetch(`${API_BASE_URL}/predict/${material}`);
         if (!res.ok) throw new Error('network');
         const data = await res.json();
 
@@ -123,7 +127,7 @@ function updateChart(labels, hist, forecast) {
 // ---------- market insight ----------
 async function fetchMarketInsight(material) {
     try {
-        const res = await fetch(`http://127.0.0.1:5000/market-insight/${material}`);
+        const res = await fetch(`${API_BASE_URL}/market-insight/${material}`);
         if (!res.ok) throw new Error('network');
         const data = await res.json();
         document.getElementById('marketRiskLevel').innerText = data.risk;
@@ -150,9 +154,9 @@ async function runEstimator() {
         timeline: parseFloat(document.getElementById('est-timeline').value) || 0,
     };
     try {
-        const res = await fetch('http://127.0.0.1:5000/estimate', {
+        const res = await fetch(`${API_BASE_URL}/estimate`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload),
         });
         const result = await res.json();
@@ -162,7 +166,7 @@ async function runEstimator() {
         document.getElementById('estimateConfidence').innerText = `Confidence: ${result.confidence_pct}%`;
         document.getElementById('estResults').style.display = 'grid';
     } catch (e) {
-        console.error(e);
+        console.error('Estimate error:', e);
     }
 }
 
@@ -170,8 +174,8 @@ async function runEstimator() {
 async function fetchMaterials() {
     try {
         // Try to fetch today's data first, fallback to regular materials endpoint
-        const endpoint = 'http://127.0.0.1:5000/materials-today';
-        const res = await fetch(endpoint).catch(() => fetch('http://127.0.0.1:5000/materials'));
+        const endpoint = `${API_BASE_URL}/materials-today`;
+        const res = await fetch(endpoint).catch(() => fetch(`${API_BASE_URL}/materials`));
         const list = await res.json();
         const tbody = document.getElementById('materialsBody');
         tbody.innerHTML = '';
@@ -193,7 +197,7 @@ async function fetchMaterials() {
 // ---------- footer data ----------
 async function fetchFooterData() {
     try {
-        const res = await fetch('http://127.0.0.1:5000/footer-data');
+        const res = await fetch(`${API_BASE_URL}/footer-data`);
         const data = await res.json();
         document.getElementById('footerDiesel').innerText = `${data.diesel_currency}${formatNumber(data.diesel_price)}`;
         document.getElementById('footerExchange').innerText = `${data.exchange_currency} ${formatNumber(data.exchange_rate)}`;

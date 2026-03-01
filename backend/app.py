@@ -429,4 +429,5 @@ def footer_data():
 # VERY IMPORTANT PART
 if __name__ == "__main__":
     print("STARTING DAVAO BUILD AI BACKEND...")
-    app.run(debug=True)
+    debug_mode = os.getenv('DEBUG', 'True').lower() == 'true'
+    app.run(debug=debug_mode)
