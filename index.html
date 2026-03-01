@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.4.0/fonts/remixicon.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>DAVAOBUILD AI | Construction Intelligence</title>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap");
+
+        :root {
+            --primary-color: #3d5a80;
+            --secondary-color: #98c1d9;
+            /* Grey Palette Update */
+            --accent-color: #4a5568; 
+            --accent-hover: #2d3748;
+            --text-dark: #293241;
+            --text-light: #5a6b83;
+            --bg-light: #f4f7fa;
+            --white: #ffffff;
+            --success: #6ab04c;
+            --warning: #f0932b;
+            --danger: #eb4d4b;
+            --max-width: 1200px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: "Montserrat", sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Unified Typography for UI Elements */
+        button, input, select, textarea {
+            font-family: "Montserrat", sans-serif;
+        }
+
+        /* 🏠 NAVIGATION & HEADER */
+        header {
+            background: var(--white);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            max-width: var(--max-width);
+            margin: auto;
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav__logo {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .nav__links {
+            display: none;
+            gap: 1.5rem;
+            list-style: none;
+        }
+
+        @media (min-width: 1024px) {
+            .nav__links { display: flex; }
+        }
+
+        .link a {
+            text-decoration: none;
+            font-weight: 700;
+            color: var(--text-dark);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .link a.active { color: var(--accent-color); border-bottom: 2px solid var(--accent-color); }
+        .link a:hover { color: var(--accent-color); }
+
+        /* PAGE VISIBILITY */
+        .page { display: none; min-height: 80vh; animation: fadeIn 0.4s ease; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 🟦 PAGE: HOME / HERO */
+        .home-hero {
+            background: linear-gradient(135deg, var(--primary-color), #2c3e50);
+            color: var(--white);
+            padding: 6rem 1.5rem;
+            text-align: center;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+        }
+
+        .home-hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+
+        .home-hero p {
+            font-size: 1rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .hero-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        @media (min-width: 640px) {
+            .hero-btns { flex-direction: row; justify-content: center; }
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            transition: 0.3s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary { background: var(--accent-color); color: white; }
+        .btn-primary:hover { background: var(--accent-hover); }
+        .btn-secondary { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); }
+
+        .intro-features {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        @media (min-width: 768px) {
+            .intro-features { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        .feature-card {
+            background: var(--white);
+            padding: 2.5rem 1.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .feature-card i { font-size: 2.5rem; color: var(--accent-color); display: block; margin-bottom: 1rem; }
+        .feature-card h3 { font-size: 1.1rem; margin-bottom: 0.8rem; color: var(--primary-color); }
+        .feature-card p { font-size: 0.85rem; color: var(--text-light); }
+
+        /* MAIN CONTAINER */
+        .container {
+            max-width: var(--max-width);
+            margin: auto;
+            padding: 3rem 1.2rem;
+        }
+
+        .section-header {
+            margin-bottom: 2.5rem;
+            padding-left: 1rem;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        /* 🟦 PAGE: PRICES */
+        .price-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .price-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        .price-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .price-card h4 { font-size: 0.75rem; color: var(--text-light); text-transform: uppercase; margin-bottom: 0.8rem; }
+        .price-val { font-size: 2rem; font-weight: 800; display: block; margin-bottom: 0.5rem; }
+        .price-change { font-size: 0.9rem; font-weight: 700; }
+        .price-change.up { color: var(--danger); }
+        .price-change.down { color: var(--success); }
+
+        /* 🟦 PAGE: FORECASTING - Responsive Chart Fix */
+        .forecast-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 1024px) {
+            .forecast-layout { grid-template-columns: 2.5fr 1fr; }
+        }
+
+        .chart-scroll-wrapper {
+            overflow-x: auto; /* Adds horizontal scroller on mobile */
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.04);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .chart-container {
+            padding: 2rem;
+            min-width: 600px; /* Forces minimum width so graph doesn't squash on small mobile */
+            min-height: 450px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-scroll-wrapper { overflow-x: visible; }
+            .chart-container { min-width: 100%; }
+        }
+
+        .prediction-stats {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.2rem;
+        }
+
+        .stat-box {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        }
+
+        /* 🟦 PAGE: ESTIMATOR */
+        .estimator-wrap {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .form-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .f-group label { display: block; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.6rem; color: var(--text-light); }
+        .f-group input, .f-group select {
+            width: 100%;
+            padding: 1.1rem;
+            border: 2px solid #edf2f7;
+            border-radius: 14px;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.2s;
+        }
+        .f-group input:focus { border-color: var(--secondary-color); }
+
+        /* Enhanced Select Dropdown Styling */
+        select {
+            transition: 0.2s;
+        }
+        select:hover {
+            border-color: #2563eb;
+        }
+        select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+        }
+
+        .output-card {
+            display: none;
+            background: var(--bg-light);
+            padding: 2.5rem;
+            border-radius: 20px;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-top: 2.5rem;
+            animation: slideUp 0.5s ease;
+        }
+
+        @media (min-width: 768px) {
+            .output-card { grid-template-columns: 1fr 1fr; }
+        }
+
+        /* MOBILE MENU DRAWER */
+        #mobileMenu {
+            position: fixed; top: 0; right: -100%; width: 280px; height: 100%;
+            background: var(--white); z-index: 1100; padding: 2rem;
+            box-shadow: -5px 0 20px rgba(0,0,0,0.1); transition: 0.4s;
+        }
+        #mobileMenu.open { right: 0; }
+        #mobileMenu ul { list-style: none; margin-top: 3rem; }
+        #mobileMenu li { margin-bottom: 1.5rem; }
+        #mobileMenu a { text-decoration: none; font-size: 1.2rem; font-weight: 800; color: var(--primary-color); }
+
+        /* OVERLAY */
+        #overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 1050; display: none;
+        }
+
+        /* 🟦 FOOTER - Arranged Layout */
+        footer {
+            padding: 4rem 1.5rem 2rem;
+            background: var(--white);
+            border-top: 1px solid #eee;
+            margin-top: 4rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+
+        @media (min-width: 768px) {
+            .footer-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+
+        .footer-stat {
+            padding: 1rem;
+            background: var(--bg-light);
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .footer-stat h6 { 
+            font-size: 0.65rem; 
+            text-transform: uppercase; 
+            margin-bottom: 0.3rem; 
+            color: var(--text-light);
+            letter-spacing: 0.5px;
+        }
+        .footer-stat p { font-size: 1.1rem; font-weight: 800; color: var(--primary-color); }
+
+        .copyright {
+            margin-top: 3rem;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+            opacity: 0.6;
+            border-top: 1px solid #eee;
+            padding-top: 2rem;
+        }
+
+        #toast {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: var(--text-dark); color: white; padding: 10px 20px;
+            border-radius: 50px; font-size: 0.8rem; z-index: 2000; display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <div class="nav__logo" onclick="navigateTo('home')">DAVAOBUILD AI</div>
+            <ul class="nav__links">
+                <li class="link"><a onclick="navigateTo('home')" class="active">Dashboard</a></li>
+                <li class="link"><a onclick="navigateTo('prediction-panel')" class="active">Price Prediction</a></li>
+                <li class="link"><a onclick="navigateTo('market-analysis')" class="active">Market Analysis</a></li>
+                <li class="link"><a onclick="navigateTo('estimator')" class="active">Estimator</a></li>
+                <li class="link"><a onclick="navigateTo('prices')" class="active">Prices</a></li>
+            </ul>
+            <div onclick="toggleMobileMenu()" style="cursor:pointer; padding: 5px;"><i class="ri-menu-4-fill" style="font-size: 1.6rem; color: var(--primary-color);"></i></div>
+        </nav>
+    </header>
+
+    <div id="overlay" onclick="toggleMobileMenu()"></div>
+    <div id="mobileMenu">
+        <div style="text-align: right;"><i class="ri-close-line" onclick="toggleMobileMenu()" style="font-size: 2rem; cursor: pointer;"></i></div>
+        <ul>
+            <li><a onclick="navigateTo('home'); toggleMobileMenu()">Dashboard</a></li>
+            <li><a onclick="navigateTo('prediction-panel'); toggleMobileMenu()">Price Prediction</a></li>
+            <li><a onclick="navigateTo('market-analysis'); toggleMobileMenu()">Market Analysis</a></li>
+            <li><a onclick="navigateTo('estimator'); toggleMobileMenu()">Estimator</a></li>
+            <li><a onclick="navigateTo('prices'); toggleMobileMenu()">Prices</a></li>
+        </ul>
+    </div>
+
+    <div id="toast">Navigation updated</div>
+
+    <!-- 🟦 PAGE: HOME -->
+    <main id="page-home" class="page active">
+
+    <section class="home-hero">
+            <h1>Intelligence for the <br>Davao Build Sector</h1>
+            <p>DavaoBuild AI monitors construction material prices in real time for Davao City and provides AI-driven cost estimations and forecasts so contractors, developers, and homeowners can plan budgets with confidence.</p>
+            <div class="hero-btns">
+                <button onclick="scrollToSection('ai-prediction')" class="btn btn-primary">Generate Prediction</button>
+                <button onclick="scrollToSection('ai-estimator')" class="btn btn-secondary">Run Simulation</button>
+            </div>
+        </section>
+
+        <div class="container">
+            <div class="section-header">
+                <h2>What the system does</h2>
+                <p>Advanced features designed to protect your project budget.</p>
+            </div>
+            <div class="intro-features">
+                <div class="feature-card">
+                    <i class="ri-radar-line"></i>
+                    <h3>Real-time Price Monitoring</h3>
+                    <p>Continuously ingests local supplier prices and official economic indicators to show up‑to‑date material costs across Davao City.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="ri-line-chart-line"></i>
+                    <h3>Hybrid AI Forecasting</h3>
+                    <p>Combines supervised ML and iterative time‑series forecasting to produce short and medium‑term price predictions informed by fuel, exchange rate, and inflation signals.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="ri-file-search-line"></i>
+                    <h3>Market Intelligence (NLP)</h3>
+                    <p>Analyzes relevant news and supplier notes to extract sentiment and risk indicators that improve forecast context and offer procurement guidance.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="ri-calculator-line"></i>
+                    <h3>Cost Estimation & Simulation</h3>
+                    <p>Estimate current vs predicted project costs, run timeline scenarios, and get recommendations on whether to buy now or delay purchases.</p>
+                </div>
+            </div>
+        </div>
+        
+    <!-- AI Prediction Panel -->
+    <section id="ai-prediction" class="container">
+        <div class="section-header">
+            <h2>AI Price Prediction</h2>
+        </div>
+        <div class="prediction-panel">
+            <div style="display:flex; gap:10px; align-items:flex-end; margin-bottom:18px; flex-wrap:wrap;">
+                <!-- Material Selector -->
+                <div class="f-group" style="display:flex; flex-direction:column; width:220px;">
+                    <label style="font-size:14px; font-weight:500; margin-bottom:6px; color:#333;">
+                        Select Material
+                    </label>
+                    <select id="materialSelector" style="padding:10px 12px; border-radius:8px; border:1px solid #ccc; font-size:14px; width:100%; cursor:pointer; transition:0.2s;" onfocus="this.style.borderColor='#2563eb'" onblur="this.style.borderColor='#ccc'">
+                        <option value="steel">Steel</option>
+                        <option value="cement">Cement</option>
+                        <option value="sand">Sand</option>
+                        <option value="gravel">Gravel</option>
+                        <option value="lumber">Lumber</option>
+                        <option value="plywood">Plywood</option>
+                    </select>
+                </div>
+                <!-- Button -->
+                <button id="predictBtn" class="btn btn-primary" style="padding:10px 18px; border-radius:8px; font-size:14px; font-weight:500; cursor:pointer;">
+                    Generate
+                </button>
+            </div>
+            <div id="loadingIndicator" style="display:none; font-size:0.9rem; color:var(--text-light);">
+                <i class="ri-loader-4-line ri-spin"></i> AI is analyzing market conditions...
+            </div>
+            <div id="predictionError" style="display:none; color:var(--danger); margin-bottom:1rem;">AI prediction unavailable. Please try again.</div>
+            <div id="predictionResults" style="display:none;">
+                <div class="price-grid">
+                    <div class="price-card">
+                        <h4>Current Price</h4>
+                        <span id="predictionCurrent" class="price-val">₱0.00</span>
+                    </div>
+                    <div class="price-card">
+                        <h4>7-Day Prediction</h4>
+                        <span id="prediction7day" class="price-val">₱0.00</span>
+                    </div>
+                    <div class="price-card">
+                        <h4>30-Day Prediction</h4>
+                        <span id="prediction30day" class="price-val">₱0.00</span>
+                    </div>
+                    <div class="price-card">
+                        <h4>Trend</h4>
+                        <span id="predictionTrend" class="price-val">➡ Stable</span>
+                    </div>
+                    <div class="price-card">
+                        <h4>Confidence</h4>
+                        <span id="predictionConfidence" class="price-val">₱0 – ₱0</span>
+                    </div>
+                    <div class="price-card">
+                        <h4>Confidence Meter</h4>
+                        <div id="confidenceMeter" style="width:100%; background:#e2e8f0; border-radius:8px;">
+                            <div id="confidenceBar" style="width:0%; background:var(--success); padding:4px 0; border-radius:8px; text-align:center; color:white; font-size:0.8rem;">0%</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-scroll-wrapper" style="margin-top:2rem;">
+                    <div class="chart-container">
+                        <canvas id="priceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <p id="predictionExplanation" style="margin-top:1rem; font-size:0.9rem; color:var(--text-light);">
+                The AI prediction is produced by a Random Forest model trained on past price data and macroeconomic signals. Use the trend and confidence to decide whether to lock in purchases or wait.
+            </p>
+        </div>
+    </section>
+
+    <!-- AI Market Intelligence -->
+    <section id="market-insight" class="container" style="margin-top:3rem;">
+        <div class="section-header">
+            <h2>AI Market Analysis</h2>
+        </div>
+        <div class="price-grid">
+            <div class="price-card">
+                <h4>Risk Level</h4>
+                <span id="marketRiskLevel" class="price-val">-</span>
+            </div>
+            <div class="price-card">
+                <h4>Market Sentiment</h4>
+                <span id="marketSentiment" class="price-val">-</span>
+            </div>
+        </div>
+        <p id="marketInsightText" style="margin-top:1rem; font-size:0.9rem; color:var(--text-dark);">-</p>
+    </section>
+
+    <!-- Cost Estimator -->
+    <section id="ai-estimator" class="container" style="margin-top:3rem;">
+        <div class="section-header">
+            <h2>Project Cost Estimator</h2>
+        </div>
+        <div class="estimator-wrap">
+            <form id="estimatorForm">
+                <div class="form-grid">
+                    <div class="f-group">
+                        <label>Project Type</label>
+                        <small style="color:var(--text-light); display:block; font-size:0.8rem; margin:0.3rem 0;">Select the type of construction project to estimate costs accurately.</small>
+                        <select id="proj-type">
+                            <option value="residential">Residential (Houses, Apartments)</option>
+                            <option value="commercial">Commercial (Offices, Retail)</option>
+                            <option value="industrial">Industrial (Factories, Warehouses)</option>
+                        </select>
+                    </div>
+                    <div class="f-group">
+                        <label>Material</label>
+                        <small style="color:var(--text-light); display:block; font-size:0.8rem; margin:0.3rem 0;">Choose the primary material for your project. Prices vary by material.</small>
+                        <select id="est-material">
+                            <option value="steel">Steel (Rebar, Beams, Columns)</option>
+                            <option value="cement">Cement (Bags, Bulk)</option>
+                            <option value="sand">Sand (Fine, Coarse)</option>
+                            <option value="gravel">Gravel (Aggregate)</option>
+                            <option value="lumber">Lumber (Wood, Timber)</option>
+                            <option value="plywood">Plywood (Sheets, Panels)</option>
+                        </select>
+                    </div>
+                    <div class="f-group">
+                        <label>Quantity</label>
+                        <small style="color:var(--text-light); display:block; font-size:0.8rem; margin:0.3rem 0;">Enter the total quantity needed. Check unit (bags, tons, sheets) below.</small>
+                        <input type="number" id="est-qty" placeholder="Enter quantity" required>
+                    </div>
+                    <div class="f-group">
+                        <label>Location</label>
+                        <small style="color:var(--text-light); display:block; font-size:0.8rem; margin:0.3rem 0;">Select delivery location in Davao. Prices may vary by district.</small>
+                        <select id="est-location">
+                            <option>Davao City - Poblacion</option>
+                            <option>Davao City - Buhangin</option>
+                            <option>Davao City - Toril</option>
+                            <option>Davao City - Talomo</option>
+                            <option>Davao City - Calinan</option>
+                            <option>Davao City - Panacan</option>
+                            <option>Davao City - Mintal</option>
+                        </select>
+                    </div>
+                    <div class="f-group">
+                        <label>Timeline (days)</label>
+                        <small style="color:var(--text-light); display:block; font-size:0.8rem; margin:0.3rem 0;">How long until delivery? Longer timelines may offer better prices.</small>
+                        <input type="number" id="est-timeline" placeholder="eg. 30" required>
+                    </div>
+                </div>
+                <button type="button" id="estimateBtn" class="btn btn-primary" style="width:100%;">Estimate Cost</button>
+            </form>
+            <div id="estResults" class="output-card">
+                <div>
+                    <h4>Current Cost</h4>
+                    <span id="estimateCurrentCost" class="price-val">₱0.00</span>
+                </div>
+                <div>
+                    <h4>Predicted Cost</h4>
+                    <span id="estimatePredictedCost" class="price-val">₱0.00</span>
+                </div>
+                <div style="grid-column:1/-1;">
+                    <p id="estimateRecommendation" style="font-weight:700;"></p>
+                    <p id="estimateConfidence" style="font-size:0.8rem; color:var(--text-light);"></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Material Price Viewer -->
+    <section id="material-table" class="container" style="margin-top:3rem;">        
+        <div class="section-header">
+            <h2>Material Prices</h2>
+        </div>
+        <table style="width:100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th style="text-align:left; padding:0.8rem; border-bottom:1px solid #ccc;">Material</th>
+                    <th style="text-align:left; padding:0.8rem; border-bottom:1px solid #ccc;">Current Price</th>
+                    <th style="text-align:left; padding:0.8rem; border-bottom:1px solid #ccc;">Last Updated</th>
+                </tr>
+            </thead>
+            <tbody id="materialsBody">
+                <tr><td colspan="3" style="text-align:center; padding:1rem;">Loading...</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-stat"><h6>Diesel (Davao Retail)</h6><p id="footerDiesel">₱59.10</p></div>
+            <div class="footer-stat"><h6>Exchange Rate</h6><p id="footerExchange">₱56.12</p></div>
+            <div class="footer-stat"><h6>Regional Inflation</h6><p id="footerInflation">3.5%</p></div>
+            <div class="footer-stat"><h6>System Status</h6><p id="footerStatus" style="color:var(--success);">SYNCED</p></div>
+        </div>
+        <div class="copyright">
+            © 2026 DavaoBuild AI Intelligence System | Construction Market Analytics
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>
