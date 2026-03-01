@@ -32,23 +32,29 @@ Render will build and deploy. You'll get a URL like: `https://davao-build-api.on
 ## Step 2: Deploy Frontend to GitHub Pages
 
 ### 2a. Update Frontend API URL
-After backend deploys, edit [frontend/main.js](frontend/main.js) line 5:
+After backend deploys, edit [frontend/main.js](frontend/main.js) and set `PRODUCTION_API_URL` on top to the URL you got from Render.
+
+The file now automatically chooses localhost when you're developing, and your production URL when the site is served from Github Pages or any other host. Example:
 
 ```javascript
-// PRODUCTION — Replace with your Render backend URL
-const API_BASE_URL = 'https://davao-build-api.onrender.com';
+const PRODUCTION_API_URL = 'https://davao-build-api.onrender.com';
 ```
+
+(You can also hardcode `API_BASE_URL` directly or disable the detection logic.)
 
 Push the change.
 
 ### 2b. Enable GitHub Pages
 1. Go to your **GitHub repo** → **Settings**
 2. Scroll to **Pages** section
-3. Set **Source** to `main` branch → `/root`
-4. Click **Save**
+3. Set **Source** to `main` branch
+4. **Option A (recommended)**: choose folder `/frontend` if you want the repository root to remain clean. This will serve `frontend/index.html` at the site root.\
+   **Option B**: choose `/ (root)` and move the contents of `frontend/` up one level or create a symbolic link.
+5. Click **Save**
 
-Your frontend will be live at: `https://<username>.github.io/infoSphere-Innovators.github.io`
+**Important:** once Pages is configured, the site root is simply `https://<username>.github.io/`. Visitors do *not* need `/frontend/index.html` – use the shorter URL.
 
+Your frontend will be live at: `https://<username>.github.io/` (or `https://<username>.github.io/infoSphere-Innovators.github.io` if you choose root).
 ---
 
 ## Step 3: Test Live Deployment

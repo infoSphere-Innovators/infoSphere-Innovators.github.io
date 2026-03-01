@@ -1,8 +1,17 @@
 // central client-side logic for DavaoBuild AI dashboard
 
 // ========== CONFIGURATION ==========
-// Base URL for API calls - easily configurable for different environments
-const API_BASE_URL = 'http://127.0.0.1:5000';
+// Base URL for API calls - automatically detect running environment.
+// If you're serving the frontend from GitHub Pages (or another host),
+// set PRODUCTION_API_URL to your deployed backend and comment out the
+// local detection line below.
+const PRODUCTION_API_URL = 'https://davao-build-api.onrender.com'; // <-- update after backend deploy
+const API_BASE_URL = (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost')
+    ? 'http://127.0.0.1:5000'
+    : PRODUCTION_API_URL;
+// You can also hardcode the URL directly if you prefer:
+// const API_BASE_URL = 'https://davao-build-api.onrender.com';
+
 
 let priceChart = null;
 
@@ -33,6 +42,8 @@ async function generatePrediction() {
     showLoading();
     hideError();
     try {
+        // API_BASE_URL resolves to localhost during development
+        // or to the production Render URL when deployed.
         const res = await fetch(`${API_BASE_URL}/predict/${material}`);
         if (!res.ok) throw new Error('network');
         const data = await res.json();
